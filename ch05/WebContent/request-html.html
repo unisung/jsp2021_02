@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<form action="request-test01.jsp">
+    <fieldset>
+       <legend>필수입력</legend>
+       아이디:<input name="id" ><br>
+       이름:<input name="name"><br>
+       비밀번호:<input name="pwd" type="password">
+    
+    </fieldset>
+    <fieldset>
+       <legend>선택입력</legend>
+       취미:
+      <input type="checkbox" name="hobby" value="reading" >독서
+      <input type="checkbox" name="hobby" value="run">달리기
+      <input type="checkbox" name="hobby" value="movie">영화감상
+      <br>
+    </fieldset>
+    <input type='submit' value="등록">
+</form>
+</body>
+</html>
