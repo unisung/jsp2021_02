@@ -9,9 +9,25 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  <!--  ch05 웹의 초기화 파라미터  -->
   <context-param>
   		<description>초기화 파라미터(필수는 아님)</description>
   		<param-name>url</param-name>
         <param-value>jdbc:oracle:thin:@localhost:1521:xe</param-value>  
+  </context-param>
+  <context-param>
+         <description>사용자 아이디</description>
+         <param-name>user</param-name>
+         <param-value>madang</param-value>
+  </context-param>
+  <context-param>
+         <description>사용자 비번</description>
+         <param-name>password</param-name>
+         <param-value>madang</param-value>
+  </context-param>
+  <context-param>
+        <description>driver 정보</description>
+        <param-name>driver</param-name>
+        <param-value>oracle.jdbc.driver.OracleDriver</param-value>
   </context-param>
 </web-app>
