@@ -17,6 +17,13 @@
         String birthY=request.getParameter("year");
         String birthM=request.getParameter("month");
         String birthD=request.getParameter("date");
+        
+        String postcode=request.getParameter("postcode");
+        String roadAddress=request.getParameter("roadAddress");
+        String jibunAddress=request.getParameter("jibunAddress");
+        String detailAddress=request.getParameter("detailAddress" );
+        String extraAddress=request.getParameter("extraAddress");
+        
         String phone1 = request.getParameter("phone1");
         String phone2 = request.getParameter("phone2");
         String phone3 = request.getParameter("phone3");
@@ -29,6 +36,10 @@
 <p>비밀번호:<%=passwd %>
 <p>이름:<%=name %>
 <p>생년월일:<%=birthY %>-<%=birthM %>-<%=birthD %>
+<p>우편번호:<%=postcode %>
+<p>도로명주소:<%=roadAddress %>
+<p>지번주소:<%=jibunAddress %>
+<p>상세주소:<%= detailAddress%>, 참고<%=extraAddress %>
 <p>성별:<%=sex %>
 <p>연락처:<%=phone1 %>-<%=phone2 %>-<%=phone3 %>
 <p>취미:<%=Arrays.toString(hobby) %>
