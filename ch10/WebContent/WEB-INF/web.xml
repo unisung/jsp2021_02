@@ -20,10 +20,13 @@
       			<description></description>
       			<role-name>role1</role-name>
       </auth-constraint>
+      <user-data-constraint>
+        <transport-guarantee>NONE</transport-guarantee>
+      </user-data-constraint>
   </security-constraint>
   
   <!-- 시스템에서 기본제공하는 인증 폼을 통한 접근시 사용 -->
- <!--  <login-config>
+ <!-- <login-config>
   		<auth-method>BASIC</auth-method>
   </login-config> -->
   

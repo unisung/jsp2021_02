@@ -17,8 +17,10 @@
   			<a href="admin/addProduct.jsp">상품등록</a>
   		    <a href="admin/member.jsp">회원 관리</a>
   	<%
-  			}
-  %>
+  			}else{
+  	%>			
+			<a href="member/products.jsp">상품 목록</a>
+   <%}%>
   
 </body>
 </html>
