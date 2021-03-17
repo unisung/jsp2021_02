@@ -15,9 +15,7 @@
         InputStream is=null;
         ResultSet rs=null;
         /* 쿼리문 작성 */
-        /*  String sql="select photo from photoTest where id=?"; */
-       /*  String sql="select profile from webMember where id=?"; */
-       String sql="select img from imgTest where id=?";
+       String sql="select profile from webMember where id=?";
         try{
         	     /* 쿼리 객체 생성*/
         	     PreparedStatement pstmt = con.prepareStatement(sql);
