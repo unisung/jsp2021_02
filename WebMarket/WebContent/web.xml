@@ -18,4 +18,24 @@
   <servlet-name>loginController</servlet-name>
   		<url-pattern>/LoginServlet</url-pattern>
   </servlet-mapping>
+  
+  <!--  서블릿 등록 --> 
+  <servlet>
+  		<servlet-name>URservlet</servlet-name>
+  		<servlet-class>ch18.com.controller.UrServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>URservlet</servlet-name>
+  	<url-pattern>/urServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  		<servlet-name>helloServlet</servlet-name>
+  		<servlet-class>ch18.com.controller.HelloServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>helloServlet</servlet-name>
+  	<url-pattern>/HelloServlet</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

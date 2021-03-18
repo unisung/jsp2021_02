@@ -50,6 +50,10 @@
 	         			<li class="nav-item">
 	         			<a class="nav-link" href="${contextPath}/editProduct.jsp?edit=delete">상품 삭제</a>
 	         			</li>
+	         			<%-- 게시판 메뉴 --%>
+	         			<li class="nav-item">
+	         			<a class="nav-link" href="/BoardListAction.do?pageNum=1">게시판</a>
+	         			</li>
 	         		</ul>
          		</div>
          </div>

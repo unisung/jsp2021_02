@@ -1,0 +1,121 @@
+package mvc.model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import mvc.database.DBConnection;
+
+//싱글톤
+public class BoardDAO {
+   private static BoardDAO instance =new BoardDAO();
+  //생성자 캡슐화
+   private BoardDAO() {}
+   //getter메소드
+  public static BoardDAO getInstance() {
+	return instance;
+  }
+   
+//검색조건과 검색어를 이용하여 게시글 전체 건 수 조회 
+	public  int  getListCount(String items,String text){
+	 //조회 객체 생성
+	Connection conn=null;
+	PreparedStatement pstmt=null;
+	ResultSet rs=null;
+	int x=0;
+	
+	String sql;
+	if(items==null && text==null)
+		 sql="select count(*) from board";
+	else
+		sql="select count(*) from board where "+items+" like '%" +text+"%'";
+	
+	System.out.println("sql : " +sql);
+	   // 제목중에 ~7이 포함된 글 리스트 조회 - select count(*) from board where content like '%7%';
+		try {
+			 conn = DBConnection.getConnection();
+			 pstmt = conn.prepareStatement(sql);
+			 rs = pstmt.executeQuery();
+			 
+			 if(rs.next()) x=rs.getInt(1);//조회한 글 전체 건수 얻기
+		}catch(Exception e) {
+			 System.out.println("getListCount() 에러: " + e);
+		}finally {
+			  DBConnection.close(rs, pstmt, conn);
+		}
+		return x;//전체 조회 건수 리턴
+  }/* getListCount 끝. */
+	
+	//검색조건과 검색어를 이용하여 게시글 리스트 조회 처리 메소드
+	public List<BoardDTO> getBoardList(int pageNum, int limit, String items,  String text){
+		 //조회 객체 생성
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		
+		int total_record = getListCount(items, text);//글 전체 건수 얻기
+		
+		int start = (pageNum -1)* limit; // 페이지당 시작 기준 얻기 (1-1)*5=0, (2-1)*5 = 5,(3-1)*5=10
+		int index = start + 1;// 1페이지일때 글번호 시작번호  1, 2페이지일대 글 시작번호 6, 3페이지 - 11
+		
+		String sql;
+		if(items==null && text==null)
+			//최근 등록한 글이 앞페이지에 오게 정렬 
+			 sql = "select  rn, num, id,name,subject, content, register_day, hit, ip "
+			     		+ " from( "
+			     		+ "     select rownum rn, num, id,name,subject, content, register_day, hit, ip "
+			     		+ "     from "
+			     		+ "     (select board.* from board order by num desc) "
+			     		+ "  ) "
+			     		+ " where rn>=? and rn<=?";
+		else
+			//최근 등록한 글이 앞페이지에 오게 정렬 
+			sql = "select  rn, num, id,name,subject, content, register_day, hit, ip "
+		     		+ " from( "
+		     		+ "     select rownum rn, num, id,name,subject, content, register_day, hit, ip "
+		     		+ "     from "
+		     		+ "     (select board.* from board where "+items+" like '%"+text+"%' order by num desc) "
+		     		+ "  ) "
+		     		+ " where rn>=? and rn<=?" ;
+		 
+		 System.out.println("page: " +pageNum +",start :" +start +", index : " + index);
+		  System.out.println("sql: " +sql);
+		  
+		//리턴할 글 목록 리스트 생성
+		ArrayList<BoardDTO> list = new ArrayList<>();
+		
+		try {
+			     conn = DBConnection.getConnection();
+			     pstmt = conn.prepareStatement(sql);
+			     pstmt.setInt(1, index);
+			     pstmt.setInt(2, start+limit);
+			     
+			     rs = pstmt.executeQuery();
+			     
+			     while(rs.next()) {
+			    	 BoardDTO board = new BoardDTO();
+			    	 board.setNum(rs.getInt("num"));
+			    	 board.setId(rs.getString("id"));
+			    	 board.setName(rs.getString("name"));
+			    	 board.setSubject(rs.getString("subject"));
+			    	 board.setContent(rs.getString("content"));
+			    	 board.setRegister_day(rs.getString("register_day"));
+			    	 board.setHit(rs.getInt("hit"));
+			    	 board.setIp(rs.getString("ip"));
+			    	 
+			    	 System.out.println("조회결과: "+board);
+			    	 
+			    	 //list에 저장
+			    	 list.add(board);
+			     }
+			     return list;
+		}catch(Exception e) {
+			 System.out.println("getBoardList() 에러 : " +e);
+		}finally {
+			 DBConnection.close(rs, pstmt, conn);
+		}
+		return null;
+	} /* getBoardList() 메소들 끝. */
+}
