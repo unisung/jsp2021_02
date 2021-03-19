@@ -118,4 +118,60 @@ public class BoardDAO {
 		}
 		return null;
 	} /* getBoardList() 메소들 끝. */
+	
+	//id에  해당하는 회원정보얻기
+	public String getLoginNameById(String id){
+		String name="";
+		//조회 객체 생성
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		//쿼리문 작성
+		String sql = "select name from webmember where id=?";
+		try {
+		conn=DBConnection.getConnection();
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, id);
+		rs=pstmt.executeQuery();
+		//쿼리결과 을 name변수에 저장
+		if(rs.next())		
+			name= rs.getString(1); 
+		}catch(Exception e) {
+			System.out.println("getLoginNameById() 에러 : " +e);
+		}finally {
+			DBConnection.close(rs, pstmt, conn);//
+		}
+		//추출한 이름 리턴		
+		return name;
+	}
+	
+	//DB에 board 인서트
+	public void insertBoard(BoardDTO board){
+		//조회 객체 생성
+				Connection conn=null;
+				PreparedStatement pstmt=null;
+
+				//쿼리문 작성
+				String sql = "insert into board(num, id, name, subject, content, register_day, ip) "
+						      + " values (board_seq.nextval, ?,?,?,?,?,?)";
+				try {
+						conn=DBConnection.getConnection();
+						pstmt = conn.prepareStatement(sql);
+						
+						pstmt.setString(1, board.getId());
+						pstmt.setString(2, board.getName());
+						pstmt.setString(3, board.getSubject());
+						pstmt.setString(4, board.getContent());
+						pstmt.setString(5, board.getRegister_day());
+						pstmt.setString(6, board.getIp());
+		
+						pstmt.executeUpdate();
+
+				}catch(Exception e) {
+					System.out.println("insertBoard() 에러 : " +e);
+				}finally {
+					DBConnection.close(pstmt, conn);//
+				}
+	} //insertBoard() 끝.
+	
 }

@@ -52,7 +52,7 @@
 	         			</li>
 	         			<%-- 게시판 메뉴 --%>
 	         			<li class="nav-item">
-	         			<a class="nav-link" href="/BoardListAction.do?pageNum=1">게시판</a>
+	         			<a class="nav-link" href="${contextPath}/BoardListAction.do?pageNum=1">게시판</a>
 	         			</li>
 	         		</ul>
          		</div>

@@ -30,7 +30,17 @@ select * from board where subject like '%제목%' order by num desc;
 select * from board where "+items+" like '%"+text+"%' order by num desc
 
 
-
+/* -- limit = 10인 경우 ( 1~10, 11 ~20, 21~30,...)
+ * start=(page -1)*limit <= (2-1)*10 = 1*10 =10, 
+ * index = start + 1 = 10+1 =11,
+ * end = start + limit = 10 + 10 = 20
+ * 
+ * --limit =5인 경우(1~5, 6~10, 11~15, 16~20,,,,)
+ * start=(page -1)*limit <= (2-1)*5 = 1*5 =5,
+ * index = start + 1 = 5+1 =6,
+ * end = start + limit = 5 + 5 = 10
+ * 
+ *  */
 select  rn, num, id,name,subject, content, register_day, hit, ip
  from
  (
@@ -38,11 +48,11 @@ select rownum rn, num, id,name,subject, content, register_day, hit, ip
   from 
 (select board.* from board where subject like '%제목%' order by num desc)
  ) 
-where rn>=11 and rn<=20
+where rn>=(10+1) and rn<=(10+5)
  ;
 
 
-
+select * from member;
 
 
 
