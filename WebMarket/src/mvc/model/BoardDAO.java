@@ -181,4 +181,125 @@ public class BoardDAO {
 				}
 	} //insertBoard() 끝.
 	
+	//게시글 번호로 게시글 정보 얻기
+	public BoardDTO  getBoardByNum(int num){
+		BoardDTO board=null;
+		
+		//조회수 증가시키기
+		updateHit(num);
+		
+		//조회 객체 생성
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		
+		String sql="select * from board where num=?";
+		
+		try {
+			     conn=DBConnection.getConnection();
+			     pstmt = conn.prepareStatement(sql);
+			     pstmt.setInt(1, num);
+			     rs=pstmt.executeQuery();
+			     if(rs.next()) {
+			    	 board = new BoardDTO();
+			    	 
+			    	 board.setNum(rs.getInt("num"));
+			    	 board.setId(rs.getString("id"));
+			    	 board.setName(rs.getString("name"));
+			    	 board.setSubject(rs.getString("subject"));
+			    	 board.setContent(rs.getString("content"));
+			    	 board.setRegister_day(rs.getString("register_day"));
+			    	 board.setHit(rs.getInt("hit"));
+			    	 board.setIp(rs.getString("ip"));
+			     }
+			  }catch(Exception e) {
+			System.out.println("getBoardByNum() 에러 : " +e);
+		}finally {
+			DBConnection.close(rs, pstmt, conn);
+		}
+		return board;
+	}//getBoardByNum() 끝.
+	
+	//선택된 글 조회수 증가 메소드
+	public void updateHit(int num){
+		//조회 객체 생성
+				Connection conn=null;
+				PreparedStatement pstmt=null;
+				
+				String sql="update board set hit = hit+1 where num=? ";
+				
+				try {
+					     conn=DBConnection.getConnection();
+					     pstmt = conn.prepareStatement(sql);
+					     pstmt.setInt(1, num);
+					     
+					     pstmt.executeUpdate();
+				}catch(Exception e){
+					 try{
+					     System.out.println("updateHit() 에러 : " +e);
+					 }catch(Exception ex) {}
+				}finally {
+					DBConnection.close(pstmt, conn);
+				}
+	}//updateHit() 끝.
+	
+	
+	//게시글 수정 처리
+	public void updateBoard(BoardDTO board){
+		//조회 객체 생성
+				Connection conn=null;
+				PreparedStatement pstmt=null;
+				
+				String sql="update board set subject=?, content=? where num=? ";
+				
+				try {
+					     conn=DBConnection.getConnection();
+					     
+					     conn.setAutoCommit(false);
+					     
+					     pstmt = conn.prepareStatement(sql);
+					     pstmt.setString(1, board.getSubject());
+					     pstmt.setString(2, board.getContent());
+					     pstmt.setInt(3, board.getNum());
+					     
+					     //	     
+					     pstmt.executeUpdate();
+					     conn.commit();
+				}catch(Exception e){
+					 try{
+						 conn.rollback();
+					     System.out.println("updateBoard() 에러 : " +e);
+					 }catch(Exception ex) {}
+				}finally {
+					DBConnection.close(pstmt, conn);
+				}
+	}//updateBoard() 메소드 끝.
+	
+	//게시글 삭제 처리 메소드
+	public void deleteBoard(int num) {
+		//조회 객체 생성
+		Connection conn=null;
+		PreparedStatement pstmt=null;
+		
+		String sql="delete from board where num=?";
+		
+		try {
+			     conn=DBConnection.getConnection();
+			     
+			     conn.setAutoCommit(false);
+			     
+			     pstmt = conn.prepareStatement(sql);
+			     pstmt.setInt(1, num);
+			     
+			     pstmt.executeUpdate();
+			     conn.commit();
+		}catch(Exception e){
+			 try{
+				 conn.rollback();
+			     System.out.println("deleteBoard() 에러 : " +e);
+			 }catch(Exception ex) {}
+		}finally {
+			DBConnection.close(pstmt, conn);
+		}
+	}//deleteBoard() 끝.
 }

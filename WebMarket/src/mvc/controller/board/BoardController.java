@@ -18,9 +18,9 @@ import mvc.model.BoardDTO;
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	//한페이당 게시글 수 설정 상수 선언
-	static final int LISTCOUNT=5;
+	static final int LISTCOUNT=10;
 	//한 화면당 page갯수
-	static final int PAGECOUNT=5;
+	static final int PAGECOUNT=10;
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
@@ -56,8 +56,110 @@ public class BoardController extends HttpServlet {
 			//처리 후 결과에 대한 응답을 view로 전달
 			RequestDispatcher rd=request.getRequestDispatcher("/BoardListAction.do");
 			rd.forward(request, response);			
+		}else if(command.equals("/BoardViewAction.do")) {//DB에서 게시글 상세 내역가져오기로 이동
+			//모델로 작업 처리 요청(분기)
+			 requestBoardView(request);
+			//처리 후 결과에 대한 응답을 view로 전달
+			RequestDispatcher rd=request.getRequestDispatcher("/BoardView.do");//게시글 상세 페이지 이동
+			rd.forward(request, response);			
+		}else if(command.equals("/BoardView.do")) {//게시글 상세 페이지 이동
+
+			//처리 후 결과에 대한 응답을 view로 전달
+			RequestDispatcher rd=request.getRequestDispatcher("./board/view.jsp");
+			rd.forward(request, response);			
+		}else if(command.equals("/BoardUpdateAction.do")) {//update후 리스트로 이동
+			//모델로 작업 처리 요청(분기)
+			 requestBoardUpdate(request);
+			//처리 후 결과에 대한 응답을 view로 전달
+			RequestDispatcher rd=request.getRequestDispatcher("/BoardListAction.do");
+			rd.forward(request, response);	
+		}else if(command.equals("/BoardDeleteAction.do")) {//삭제후 리스트로 이동
+			//모델로 작업 처리 요청(분기)
+			 requestBoardDelete(request);
+			//처리 후 결과에 대한 응답을 view로 전달
+			RequestDispatcher rd=request.getRequestDispatcher("/BoardListAction.do");
+			rd.forward(request, response);	
 		}
+			
+		}//doPost() 끝.
+			
+
+	//상세페이지에서 삭제 후 BoardList로 이동
+ private void requestBoardDelete(HttpServletRequest request) {
+		// 상세페이지에서 수정 처리 후
+		//BoardList로 되돌아갈때 원래 페이지 로 가기위한 값 저장 
+			int num=Integer.parseInt(request.getParameter("num"));
+			int pageNum = Integer.parseInt(request.getParameter("pageNum"));
+			
+			String items = request.getParameter("items");
+			String text=request.getParameter("text");
+				
+			 BoardDAO dao = BoardDAO.getInstance();
+
+				dao.deleteBoard(num);
+				
+				//상세페이지로 이동시 BoardList로 되돌아 가기위한 파라미터들을 세팅
+				request.setAttribute("num", num);
+				request.setAttribute("pageNum", pageNum);
+				request.setAttribute("items", items);
+				request.setAttribute("text", text);
+	}
+
+
+//상세페이지에서 수정한 내용을 받아서 DB에 update처리
+  private void requestBoardUpdate(HttpServletRequest request) {
+		// 상세페이지에서 수정 처리 후
+		//BoardList로 되돌아갈때 원래 페이지 로 가기위한 값 저장 
+		int num=Integer.parseInt(request.getParameter("num"));
+		int pageNum = Integer.parseInt(request.getParameter("pageNum"));
+		String items = request.getParameter("items");
+		String text=request.getParameter("text");
 		
+		BoardDAO dao = BoardDAO.getInstance();
+		//파라미터로 받은 글 번호로 DB에서 게시글 정보 추출
+		BoardDTO board = new BoardDTO();
+		board.setNum(num);
+		board.setName(request.getParameter("name"));
+		board.setSubject(request.getParameter("subject"));
+		board.setContent(request.getParameter("content"));
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd(HH:mm:sss)");
+		String register_day = formatter.format(new Date());
+		board.setHit(0);//수정시는 조회증가를 0으로 처리 
+		board.setRegister_day(register_day);
+		board.setIp(request.getRemoteAddr());
+		
+		dao.updateBoard(board);
+
+		//상세페이지로 이동시 BoardList로 되돌아 가기위한 파라미터들을 세팅
+		request.setAttribute("num", num);
+		request.setAttribute("pageNum", pageNum);
+		request.setAttribute("board", board);
+		request.setAttribute("items", items);
+		request.setAttribute("text", text);
+		
+	}
+
+	//게시글 리스트에서 선택된 글 상세 페이지 가져오기
+	private void requestBoardView(HttpServletRequest request) {
+		BoardDAO dao = BoardDAO.getInstance();
+		//BoardList에 출력된 정보를 얻어서 상세페이지로 갔다가가 다시 
+		//BoardList로 되돌아갈때 원래 페이지 로 가기위한 값 저장 
+		int num=Integer.parseInt(request.getParameter("num"));
+		int pageNum = Integer.parseInt(request.getParameter("pageNum"));
+		String items = request.getParameter("items");
+		String text=request.getParameter("text");
+		
+		//파라미터로 받은 글 번호로 DB에서 게시글 정보 추출
+		BoardDTO board = new BoardDTO();
+		board = dao.getBoardByNum(num);
+		
+		//상세페이지로 이동시 BoardList로 되돌아 가기위한 파라미터들을 세팅
+		request.setAttribute("num", num);
+		request.setAttribute("pageNum", pageNum);
+		request.setAttribute("board", board);
+		request.setAttribute("items", items);
+		request.setAttribute("text", text);
 		
 	}
 	//게시글 db등록 처리
@@ -99,7 +201,7 @@ private void requestBoardList(HttpServletRequest request) {
 	//글 목록 페이지 설정
 	 int pageNum=1;
 	 int limit=LISTCOUNT;
-	 int pageLimit=PAGECOUNT;
+	 int pageLimit=PAGECOUNT;//한 화면당 페이지 갯수 
 	 
 	 if(request.getParameter("pageNum")!=null)
 		 pageNum = Integer.parseInt(request.getParameter("pageNum"));
@@ -118,16 +220,13 @@ private void requestBoardList(HttpServletRequest request) {
 	 
 	 //전체 segment
 	 int total_segment;
-	 
-	 //전체 segment 수 계산
-	 if(total_record % limit ==0) {//예)  20건 / 5 = 몫4 나머지 0
-		 total_page = total_record/limit;//페이지수 - 정수/정수 => 정수
-		 Math.floor(total_page);//버림처리(혹시나)
-	 }else { //예) 22건 /5 = 몫4, 나머지 2
-		 total_page = total_record/limit;//페이지수 - 정수/정수 => 정수
-		 Math.floor(total_page);//버림처리(혹시나)
-		 total_page = total_page + 1;//한 페이지 더 할당 
-	 }
+	 //현재 페이지가 속한 블럭
+	 int  segmentNum = (pageNum-1)/ pageLimit;// 정수/정수 =정수
+	 //현재 페이지가 속한 블럭의 시작페이지 번호
+     int segmentStartNum = (pageLimit * segmentNum) + 1;
+     //현재 페이지가 속한 블럭의 끝 페이지 번호
+     int segmentLastNum = segmentStartNum + (pageLimit-1);
+     
 	 
 	 
 	 
@@ -147,6 +246,10 @@ private void requestBoardList(HttpServletRequest request) {
 	 //검색조건, 검색어 추가
 	 request.setAttribute("items", items);
 	 request.setAttribute("text", text);
+	 //블럭단위 값 
+	 request.setAttribute("currentBlock", segmentNum+1);
+	 request.setAttribute("currentBlockStartPage", segmentStartNum);
+	 request.setAttribute("currentBlockEndPage", segmentLastNum);
 	}
 
 	

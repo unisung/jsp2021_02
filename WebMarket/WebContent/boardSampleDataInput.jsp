@@ -15,7 +15,7 @@ if(id!=null && name!=null){
 			pstmt.setString(1,id);
 			pstmt.setString(2,name);
 		
-		for(int i=0;i<10;i++)
+		for(int i=0;i<100;i++)
 			pstmt.executeUpdate();
 }
 

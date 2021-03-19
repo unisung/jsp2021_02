@@ -35,7 +35,7 @@
   	        <c:forEach var="notice"  items="${boardlist }">   
   	           <tr>
   	                 <td>${notice.num}</td>
-  	                 <td><a href="./BoardViewAction.do?num=${notice.num}">${notice.subject}</a></td>
+  	                 <td><a href="./BoardViewAction.do?num=${notice.num}&pageNum=${pageNum}&items=${items}&text=${text}">${notice.subject}</a></td>
   	                 <td>${notice.register_day}</td>
   	                 <td>${notice.hit}</td>
   	                 <td>${notice.name}</td>
@@ -49,22 +49,49 @@
   	         <c:set var="pageNum" value="${pageNum}"/>
   	        <nav aria-label="...">
 			  <ul class="pagination">
-				   <li class="page-item disabled">
-				    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-				   </li>
-				   
-	        <c:forEach var="i" begin="1" end="${total_page}">
+			  <!--  이전 블럭으로 이동 처리  -->
+			      <c:if test="${currentBlockStartPage>1}">
+				      <li class="page-item">
+					    <a class="page-link" 
+					    	href="<c:url value="./BoardListAction.do?pageNum=${currentBlockStartPage-1}&items=${items}&text=${text}"/>" 
+					    	tabindex="-1" aria-disabled="true">Previous</a>
+					   </li>
+			      </c:if>
+			      <c:if test="${currentBlockStartPage<=1}">
+				      <li class="page-item disabled">
+					    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+					   </li>
+			      </c:if>
+				  
+			<!--  한 화면당  페이지 갯수 만큼 페이지번호 출력하기  -->	   
+	        <c:forEach var="i" begin="${currentBlockStartPage}" 
+	                     end="${currentBlockEndPage}">
 				    <c:if test="${pageNum!=i}">
-				       <li class="page-item"><a class="page-link" href="<c:url value="./BoardListAction.do?pageNum=${i}&items=${items}&text=${text}"/>">${i}</a></li>
+				         <c:if test="${i>total_page}">
+				           <li class="page-item disabled"><a class="page-link" href="<c:url value="./BoardListAction.do?pageNum=${i}&items=${items}&text=${text}"/>">${i}</a></li>
+				         </c:if>
+				         <c:if test="${i<=total_page}">
+				           <li class="page-item"><a class="page-link" href="<c:url value="./BoardListAction.do?pageNum=${i}&items=${items}&text=${text}"/>">${i}</a></li>
+				         </c:if>
 				    </c:if>
 				    <c:if test="${pageNum==i }">
 				    	<li class="page-item active" aria-current="page"><a class="page-link" href="<c:url value="./BoardListAction.do?pageNum=${i}&items=${items}&text=${text}"/>">${i}</a></li>
                     </c:if>
 	          </c:forEach>
-				    
-				    <li class="page-item">
+	          
+	            <!--  다음 블럭으로 이동 처리  -->
+	            <c:if  test="${currentBlockEndPage>total_page}"> 
+				    <li class="page-item disabled">
 				      <a class="page-link" href="#">Next</a>
 				    </li>
+				  </c:if>
+				  <c:if  test="${currentBlockEndPage<=total_page}"> 
+				    <li class="page-item">
+				      <a class="page-link" 
+				           href="<c:url value="./BoardListAction.do?pageNum=${currentBlockEndPage+1}&items=${items}&text=${text}"/>"
+				      >Next</a>
+				    </li>
+				   </c:if>
             </ul>
         </nav>
     </div>
