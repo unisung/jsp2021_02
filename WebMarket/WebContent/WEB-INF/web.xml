@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
-  <display-name>WebMarket</display-name>
+  <display-name>WebMarket_old</display-name>
   <security-role>
     <description>관리자 보안설정</description>
     <role-name>admin</role-name>
@@ -41,15 +41,12 @@
     <filter-name>LogFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  
-  <!-- servlet 설정 -->
   <servlet>
-  		<servlet-name>BoardController</servlet-name>
-  		<servlet-class>mvc.controller.board.BoardController</servlet-class>
+    <servlet-name>BoardController</servlet-name>
+    <servlet-class>mvc.controller.board.BoardController</servlet-class>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>BoardController</servlet-name>
-  	<url-pattern>*.do</url-pattern>
+    <servlet-name>BoardController</servlet-name>
+    <url-pattern>*.do</url-pattern>
   </servlet-mapping>
-  
 </web-app>

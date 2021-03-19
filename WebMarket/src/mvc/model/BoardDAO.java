@@ -27,11 +27,17 @@ public class BoardDAO {
 	int x=0;
 	
 	String sql;
-	if(items==null && text==null)
+	if((items==null || items.equals("")) && (text==null || text.equals(""))) {
 		 sql="select count(*) from board";
-	else
+	}
+	else {
+		/*
+		 * System.out.println(items==null); System.out.println(text==null);
+		 * System.out.println(items.length()); System.out.println(text.length());
+		 * System.out.println(text.equals("")); System.out.println(items.equals(""));
+		 */
 		sql="select count(*) from board where "+items+" like '%" +text+"%'";
-	
+	}
 	System.out.println("sql : " +sql);
 	   // 제목중에 ~7이 포함된 글 리스트 조회 - select count(*) from board where content like '%7%';
 		try {
@@ -61,7 +67,7 @@ public class BoardDAO {
 		int index = start + 1;// 1페이지일때 글번호 시작번호  1, 2페이지일대 글 시작번호 6, 3페이지 - 11
 		
 		String sql;
-		if(items==null && text==null)
+		if((items==null || items.equals("")) && (text==null || text.equals(""))) {
 			//최근 등록한 글이 앞페이지에 오게 정렬 
 			 sql = "select  rn, num, id,name,subject, content, register_day, hit, ip "
 			     		+ " from( "
@@ -70,7 +76,8 @@ public class BoardDAO {
 			     		+ "     (select board.* from board order by num desc) "
 			     		+ "  ) "
 			     		+ " where rn>=? and rn<=?";
-		else
+		}
+		else {
 			//최근 등록한 글이 앞페이지에 오게 정렬 
 			sql = "select  rn, num, id,name,subject, content, register_day, hit, ip "
 		     		+ " from( "
@@ -79,7 +86,7 @@ public class BoardDAO {
 		     		+ "     (select board.* from board where "+items+" like '%"+text+"%' order by num desc) "
 		     		+ "  ) "
 		     		+ " where rn>=? and rn<=?" ;
-		 
+		}
 		 System.out.println("page: " +pageNum +",start :" +start +", index : " + index);
 		  System.out.println("sql: " +sql);
 		  
